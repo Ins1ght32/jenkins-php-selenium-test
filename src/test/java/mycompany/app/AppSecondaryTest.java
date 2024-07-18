@@ -1,3 +1,5 @@
+package com.mycompany.app;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,7 +25,7 @@ public class AppSecondaryTest {
         driver.get("http://192.168.1.188/"); // Replace with your login page URL
 
         // Optional: Print page source for debugging
-        System.out.println(driver.getPageSource());
+        //System.out.println(driver.getPageSource());
     }
 
     @Test
