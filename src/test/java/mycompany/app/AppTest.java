@@ -1,85 +1,86 @@
+package com.mycompany.app;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.After;
+import static org.junit.Assert.*;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AppSecondaryTest {
-    private WebDriver driver;
+/**
+ * Integration UI test for PHP App.
+ */
+public class AppTest
+{
+	WebDriver driver; 
+	WebDriverWait wait; 
+	String url = "http://192.168.1.188";
+	String validEmail = "user@example.com";
+	String validPassword = "password1234";
+	String invalidEmail = "none@example.com";
+	String invalidPassword = "password";
 
     @Before
-    public void setUp() {
-        // Initialize HtmlUnitDriver
-        driver = new HtmlUnitDriver(true); // 'true' enables JavaScript
+    public void setUp() { 
+		driver = new HtmlUnitDriver(); 
+		wait = new WebDriverWait(driver, 10); 
+	} 
 
-        // Navigate to the login page
-        driver.get("http://192.168.1.188/login.php"); // Replace with your login page URL
-    }
-
+	@After
+    public void tearDown() { 
+		driver.quit(); 
+	}	 
+	
     @Test
-    public void testSuccessfulLogin() {
-        // Locate the email and password fields
-        WebElement emailField = driver.findElement(By.name("email"));
-        WebElement passwordField = driver.findElement(By.name("password"));
-        
-        // Enter the valid credentials
-        emailField.sendKeys("user@example.com");
-        passwordField.sendKeys("password1234");
-        
-        // Submit the form
-        WebElement submitButton = driver.findElement(By.name("submit"));
-        submitButton.click();
-        
-        // Assert the user is redirected to the dashboard
-        assertTrue(driver.getCurrentUrl().contains("dashboard.php"));
-    }
+    public void testLoginWithValidEmailValidPassword() 
+		throws InterruptedException { 
 
-    @Test
-    public void testUnsuccessfulLoginWrongEmail() {
-        // Locate the email and password fields
-        WebElement emailField = driver.findElement(By.name("email"));
-        WebElement passwordField = driver.findElement(By.name("password"));
-        
-        // Enter invalid email and valid password
-        emailField.sendKeys("wrong@example.com");
-        passwordField.sendKeys("password1234");
-        
-        // Submit the form
-        WebElement submitButton = driver.findElement(By.name("submit"));
-        submitButton.click();
-        
-        // Assert the error message is displayed
-        WebElement errorMsg = driver.findElement(By.className("error-msg"));
-        assertTrue(errorMsg.getText().contains("Login failed"));
-    }
+		//get web page
+		driver.get(url);
+		//wait until page is loaded or timeout error
+		wait.until(ExpectedConditions.titleContains("Login Page |")); 
 
-    @Test
-    public void testUnsuccessfulLoginWrongPassword() {
-        // Locate the email and password fields
-        WebElement emailField = driver.findElement(By.name("email"));
-        WebElement passwordField = driver.findElement(By.name("password"));
-        
-        // Enter valid email and invalid password
-        emailField.sendKeys("user@example.com");
-        passwordField.sendKeys("wrongpassword");
-        
-        // Submit the form
-        WebElement submitButton = driver.findElement(By.name("submit"));
-        submitButton.click();
-        
-        // Assert the error message is displayed
-        WebElement errorMsg = driver.findElement(By.className("error-msg"));
-        assertTrue(errorMsg.getText().contains("Login failed"));
-    }
+		//enter input
+		driver.findElement(By.name("email")).sendKeys(validEmail);
+		driver.findElement(By.name("password")).sendKeys(validPassword);
+		//click submit
+		driver.findElement(By.name("submit")).submit();
+	
+		//check result 
+		String expectedResult = "Dashboard |"; 
+		boolean isResultCorrect = wait.until(ExpectedConditions.titleContains(expectedResult)); 
+		assertTrue(isResultCorrect == true); 
+	}
+		
+	@Test
+    public void testLoginWithValidEmailInvalidPassword() 
+		throws InterruptedException { 
 
-    @After
-    public void tearDown() {
-        // Close the browser
-        if (driver != null) {
-            driver.quit();
-        }
-    }
+		//get web page
+		driver.get(url);
+		//wait until page is loaded or timeout error
+		wait.until(ExpectedConditions.titleContains("Login Page |")); 
+
+		//enter input
+		driver.findElement(By.name("email")).sendKeys(validEmail);
+		driver.findElement(By.name("password")).sendKeys(invalidPassword);
+		//click submit
+		driver.findElement(By.name("submit")).submit();
+	
+		//check result
+		By errorMsgId = By.className("error-msg");
+		String expectedResult = "Login failed"; 
+		boolean isResultCorrect = wait.until(ExpectedConditions.textToBe(errorMsgId, expectedResult)); 
+		assertTrue(isResultCorrect == true); 
+	}
+
 }

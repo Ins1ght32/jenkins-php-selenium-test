@@ -1,8 +1,7 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,18 +12,9 @@ public class AppSecondaryTest {
 
     @Before
     public void setUp() {
-        // Set the path to your ChromeDriver
-        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
-        
-        // Set Chrome options
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        
-        // Initialize WebDriver
-        driver = new ChromeDriver(options);
-        
+        // Initialize HtmlUnitDriver
+        driver = new HtmlUnitDriver(true); // 'true' enables JavaScript
+
         // Navigate to the login page
         driver.get("http://192.168.1.188/login.php"); // Replace with your login page URL
     }
