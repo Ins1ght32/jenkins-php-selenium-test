@@ -20,7 +20,7 @@ public class AppSecondaryTest {
         wait = new WebDriverWait(driver, 10); // 10 seconds wait time
 
         // Navigate to the login page
-        driver.get("http://192.168.1.188/login.php"); // Replace with your login page URL
+        driver.get("http://192.168.1.188/"); // Replace with your login page URL
 
         // Optional: Print page source for debugging
         System.out.println(driver.getPageSource());
