@@ -2,6 +2,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,69 +11,74 @@ import static org.junit.Assert.assertTrue;
 
 public class AppSecondaryTest {
     private WebDriver driver;
+    private WebDriverWait wait;
 
     @Before
     public void setUp() {
-        // Initialize HtmlUnitDriver
-        driver = new HtmlUnitDriver(true); // 'true' enables JavaScript
+        // Initialize HtmlUnitDriver with JavaScript enabled
+        driver = new HtmlUnitDriver(true);
+        wait = new WebDriverWait(driver, 10); // 10 seconds wait time
 
         // Navigate to the login page
         driver.get("http://192.168.1.188/login.php"); // Replace with your login page URL
+
+        // Optional: Print page source for debugging
+        System.out.println(driver.getPageSource());
     }
 
     @Test
     public void testSuccessfulLogin() {
-        // Locate the email and password fields
-        WebElement emailField = driver.findElement(By.name("email"));
-        WebElement passwordField = driver.findElement(By.name("password"));
-        
+        // Wait for the email field to be present
+        WebElement emailField = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("email")));
+        WebElement passwordField = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("password")));
+
         // Enter the valid credentials
         emailField.sendKeys("user@example.com");
         passwordField.sendKeys("password1234");
-        
+
         // Submit the form
-        WebElement submitButton = driver.findElement(By.name("submit"));
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.name("submit")));
         submitButton.click();
-        
+
         // Assert the user is redirected to the dashboard
-        assertTrue(driver.getCurrentUrl().contains("dashboard.php"));
+        assertTrue(wait.until(ExpectedConditions.urlContains("dashboard.php")));
     }
 
     @Test
     public void testUnsuccessfulLoginWrongEmail() {
-        // Locate the email and password fields
-        WebElement emailField = driver.findElement(By.name("email"));
-        WebElement passwordField = driver.findElement(By.name("password"));
-        
+        // Wait for the email field to be present
+        WebElement emailField = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("email")));
+        WebElement passwordField = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("password")));
+
         // Enter invalid email and valid password
         emailField.sendKeys("wrong@example.com");
         passwordField.sendKeys("password1234");
-        
+
         // Submit the form
-        WebElement submitButton = driver.findElement(By.name("submit"));
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.name("submit")));
         submitButton.click();
-        
+
         // Assert the error message is displayed
-        WebElement errorMsg = driver.findElement(By.className("error-msg"));
+        WebElement errorMsg = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("error-msg")));
         assertTrue(errorMsg.getText().contains("Login failed"));
     }
 
     @Test
     public void testUnsuccessfulLoginWrongPassword() {
-        // Locate the email and password fields
-        WebElement emailField = driver.findElement(By.name("email"));
-        WebElement passwordField = driver.findElement(By.name("password"));
-        
+        // Wait for the email field to be present
+        WebElement emailField = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("email")));
+        WebElement passwordField = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("password")));
+
         // Enter valid email and invalid password
         emailField.sendKeys("user@example.com");
         passwordField.sendKeys("wrongpassword");
-        
+
         // Submit the form
-        WebElement submitButton = driver.findElement(By.name("submit"));
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.name("submit")));
         submitButton.click();
-        
+
         // Assert the error message is displayed
-        WebElement errorMsg = driver.findElement(By.className("error-msg"));
+        WebElement errorMsg = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("error-msg")));
         assertTrue(errorMsg.getText().contains("Login failed"));
     }
 
